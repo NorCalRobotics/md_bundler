@@ -1,48 +1,42 @@
-# md_bundler Code-to-Markdown Archiver
+# Markdown Archiver
 
-A lightweight Python utility that concatenates multiple source code files into a single structured Markdown document (archive.md) with syntax highlighting based on MIME type detection.
+A local, browser-based utility for bundling selected files into a single Markdown archive for prompts, code reviews, and context sharing. The app runs entirely in the browser.
 
-## Primary Use Case: Providing LLM Context
+## What the new UI does
 
-While this utility can be used for general code archiving, its primary purpose is to **bundle codebase files into a single document to attach to LLMs (Large Language Models)**. 
+The interface provides a simple workflow for creating an archive from local files:
 
-When working with AI assistants on complex projects, uploading multiple individual files can be tedious or restricted by file-upload limits. By consolidating your relevant source files, configs, and scripts into a single, cleanly formatted `archive.md` file, you can easily provide an LLM with broader, multi-file context for better code reviews, debugging, and feature development.
+- Enter an archive title
+- Choose one or more files from your machine
+- Review the selected files in the list
+- Build a downloadable Markdown document
+- Clear the selection and start over when needed
 
 ## Key Features
 
-- Automated Language Detection: Uses the system's native 'file' command to inspect MIME types and automatically determine the appropriate Markdown language tag for syntax highlighting.
-- Custom Document Titles: Accepts a custom title as the first command-line argument (defaults to 'Archive' if omitted).
-- Safe Code Fencing: Uses 4-backtick blocks so inner code containing 3-backtick Markdown fences will not break formatting.
-- Safe UTF-8 Encoding: Reads source files with standard UTF-8 encoding and gracefully replaces decoding errors to ensure non-breaking script execution.
+- Plain JavaScript implementation with no command-line dependency
+- Local in-browser file selection using the File API
+- Automatic language-tag inference for common source and config files
+- Downloadable Markdown output as archive.md
+- Lightweight preview of the generated archive
 
-## Requirements
+## How to Use
 
-- Python 3.x
-- Unix/Linux Environment (or macOS/WSL) with the system utility 'file' installed and accessible in PATH.
+1. Open index.html in a browser.
+2. Enter a title for the archive.
+3. Select the files you want to bundle.
+4. Click Build Archive.
+5. Download the generated archive or review the preview.
 
-## Usage
+## Project Files
 
-### Syntax
+- index.html: the main app layout and UI shell
+- styles.css: visual styling for the interface
+- app.js: file selection, archive generation, and download logic
 
-python md_archiver.py [Title] [file1] [file2] ...
+## Use Case
 
-### Examples
-
-#### Preparing Files for LLM Analysis
-Combine core source files to attach to an AI prompt:
-python md_archiver.py "Project Context for LLM" main.py utils.py config.json
-
-#### Archiving Entire Directory Patterns
-Specify a title and use wildcards:
-python md_archiver.py "API Refactor Context" src/*.py
-
-## How It Works
-
-1. Title Initialization: Reads first command-line argument as the primary heading. If not supplied, defaults to 'Archive'.
-2. File Processing Loop: Iterates through each file path passed in remaining command-line arguments.
-3. MIME Type Inspection: Invokes `file -b --mime-type <filename>` via Python's subprocess module to inspect the file format.
-4. Language Tag Mapping: Strips `text/x-script.` or `application/` prefixes to isolate language identifiers (e.g., mapping 'c++' to 'cpp').
-5. Markdown Writing: Appends a secondary header (## filename), opens a code block, appends file contents, and closes the code block cleanly.
+This tool is especially useful when preparing a compact, structured set of files to attach to an LLM prompt or share with collaborators in one document.
 
 ## License
 

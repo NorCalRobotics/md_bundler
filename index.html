@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Archiver</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="app-shell">
+        <section class="panel">
+            <h1>Markdown Archiver</h1>
+            <p class="intro">Bundle local files into a single Markdown archive directly in your browser.</p>
+
+            <label class="field">
+                <span>Archive Title</span>
+                <input id="title-input" type="text" value="Archive" placeholder="Archive">
+            </label>
+
+            <label class="field">
+                <span>Select Files</span>
+                <input id="file-input" type="file" multiple>
+            </label>
+
+            <div class="actions">
+                <button id="build-btn" type="button">Build Archive</button>
+                <button id="clear-btn" class="secondary" type="button">Clear</button>
+            </div>
+
+            <div id="selection-summary" class="summary">No files selected.</div>
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="panel">
+            <h2>Files to Archive</h2>
+            <ul id="file-list" class="file-list"></ul>
+        </section>
+
+        <section class="panel">
+            <h2>Download</h2>
+            <div id="download-area" class="download-area">
+                <p>No archive generated yet.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
