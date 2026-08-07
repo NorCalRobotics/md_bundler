@@ -125,6 +125,98 @@ function normalizeLanguage(language) {
     return language;
 }
 
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function renderInlineMarkdown(text) {
+    let escaped = escapeHtml(text);
+    const codeSpans = [];
+
+    escaped = escaped.replace(/`([^`]+)`/g, (_, code) => {
+        const index = codeSpans.length;
+        codeSpans.push(`<code>${escapeHtml(code)}</code>`);
+        return `__CODE_${index}__`;
+    });
+
+    escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    escaped = escaped.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    escaped = escaped.replace(/__CODE_(\d+)__/g, (_, index) => codeSpans[Number(index)]);
+
+    return escaped;
+}
+
+function renderMarkdownPreview(markdown) {
+    const lines = String(markdown || '').split('\n');
+    const html = [];
+    let index = 0;
+
+    while (index < lines.length) {
+        const line = lines[index];
+
+        if (!line.trim()) {
+            index += 1;
+            continue;
+        }
+
+        if (line.startsWith('```')) {
+            const codeLines = [];
+            index += 1;
+
+            while (index < lines.length && !lines[index].startsWith('```')) {
+                codeLines.push(lines[index]);
+                index += 1;
+            }
+
+            if (index < lines.length) {
+                index += 1;
+            }
+
+            html.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+            continue;
+        }
+
+        if (/^#{1,6}\s/.test(line)) {
+            const level = line.match(/^#+/)[0].length;
+            const content = line.replace(/^#{1,6}\s/, '');
+            html.push(`<h${level}>${renderInlineMarkdown(content)}</h${level}>`);
+            index += 1;
+            continue;
+        }
+
+        if (/^\s*[-*]\s/.test(line)) {
+            const items = [];
+            while (index < lines.length && /^\s*[-*]\s/.test(lines[index])) {
+                items.push(`<li>${renderInlineMarkdown(lines[index].replace(/^\s*[-*]\s/, ''))}</li>`);
+                index += 1;
+            }
+            html.push(`<ul>${items.join('')}</ul>`);
+            continue;
+        }
+
+        if (/^\s*---\s*$/.test(line)) {
+            html.push('<hr>');
+            index += 1;
+            continue;
+        }
+
+        const paragraphLines = [];
+        while (index < lines.length && lines[index].trim() && !lines[index].startsWith('```') && !/^#{1,6}\s/.test(lines[index]) && !/^\s*[-*]\s/.test(lines[index]) && !/^\s*---\s*$/.test(lines[index])) {
+            paragraphLines.push(lines[index].trim());
+            index += 1;
+        }
+
+        if (paragraphLines.length) {
+            html.push(`<p>${renderInlineMarkdown(paragraphLines.join(' '))}</p>`);
+        }
+    }
+
+    return html.join('');
+}
+
 function renderFileList() {
     elements.fileList.replaceChildren();
 
@@ -223,9 +315,9 @@ async function buildArchive() {
     link.textContent = 'Download archive.md';
     elements.downloadArea.appendChild(link);
 
-    const preview = document.createElement('pre');
+    const preview = document.createElement('div');
     preview.className = 'preview';
-    preview.textContent = archiveContent.slice(0, 1200);
+    preview.innerHTML = renderMarkdownPreview(archiveContent);
     elements.downloadArea.appendChild(preview);
 
     setStatus(`Archive ready with ${state.selectedFiles.length} file(s).`);

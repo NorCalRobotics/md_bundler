@@ -140,13 +140,51 @@ button.secondary {
 }
 
 .preview {
-    white-space: pre-wrap;
+    white-space: normal;
     word-break: break-word;
     padding: 12px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    max-height: 240px;
+    max-height: 70vh;
     overflow: auto;
     font-size: 13px;
+    line-height: 1.5;
+}
+
+.preview h1,
+.preview h2,
+.preview h3 {
+    margin: 0 0 8px;
+}
+
+.preview p {
+    margin: 0 0 8px;
+}
+
+.preview ul {
+    margin: 0 0 8px 18px;
+    padding: 0;
+}
+
+.preview hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 12px 0;
+}
+
+.preview pre {
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    max-height: calc(12 * 1.5em + 20px);
+    overflow: auto;
+}
+
+.preview pre code {
+    display: block;
+    white-space: pre;
+    font-family: Consolas, Monaco, monospace;
 }
