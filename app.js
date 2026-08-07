@@ -37,19 +37,28 @@ function inferLanguage(file) {
         c: 'c',
         cc: 'cpp',
         cpp: 'cpp',
+        cfg: 'ini',
+        conf: 'ini',
+        config: 'ini',
         cxx: 'cpp',
         css: 'css',
+        desktop: 'ini',
         html: 'html',
         h: 'c',
         hpp: 'cpp',
+        ics: 'ini',
+        ini: 'ini',
         java: 'java',
         js: 'javascript',
         json: 'json',
         kt: 'kotlin',
+        kml: 'xml',
         md: 'markdown',
         php: 'php',
+        properties: 'ini',
         py: 'python',
         rs: 'rust',
+        service: 'ini',
         sh: 'bash',
         ts: 'typescript',
         txt: 'text',
@@ -72,11 +81,20 @@ function inferLanguage(file) {
         'text/javascript': 'javascript',
         'text/markdown': 'markdown',
         'text/plain': 'text',
-        'text/xml': 'xml'
+        'text/xml': 'xml',
+        'application/x-desktop': 'ini'
     };
 
     if (typeMap[type]) {
         return typeMap[type];
+    }
+
+    if (type.endsWith('+xml')) {
+        return 'xml';
+    }
+
+    if (type.endsWith('+json')) {
+        return 'json';
     }
 
     if (type.startsWith('text/x-script.')) {
